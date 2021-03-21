@@ -4,7 +4,7 @@ from scipy.integrate import solve_ivp
 import math
 
 class FESModel:
-  def __init__(self):
+  def __init__(self, excitation_input):
     # Model constants for an average subject (75kg - 1.75m)
     self.TAct = 0.01 # Activation constant time [sec]
     self.TDeact = 0.04 # Relaxation constant time [sec]
@@ -23,13 +23,14 @@ class FESModel:
     self.lMT0 = 32.1 # Muscle-tendon length at rest [cm]
     self.a = [2.10, -0.08, -7.97, 0.19, -1.79] # Parameters of elastic torque T-Elastic
     self.g = 9.81
+    self.u = excitation_input
 
   # EQN 4
   def roc_excitation(self, sv, T_act, T_deact):
     # x1 dot = rate of chance of dynamic level of muscle activation
     # x1 = Factivation
     x1 = sv[0]
-    x1_dot = (u - x1) * ((u / T_act) - ((1 - u) / T_deact))
+    x1_dot = (self.u - x1) * ((self.u / T_act) - ((1 - self.u) / T_deact))
     return x1_dot
 
   # EQN 5
