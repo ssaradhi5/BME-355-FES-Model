@@ -30,7 +30,8 @@ class FESModel:
     # x1 dot = rate of chance of dynamic level of muscle activation
     # x1 = Factivation
     x1 = sv[0]
-    x1_dot = (self.u - x1) * ((self.u / T_act) - ((1 - self.u) / T_deact))
+    x1_dot = (self.u - x1) * ((self.u / T_act) + ((1 - self.u) / T_deact))
+
     return x1_dot
 
   # EQN 5
@@ -131,6 +132,7 @@ class FESModel:
       Ffv = ( 1 - self.aV * (vCE / self.fv2) ) / ( 1 + (vCE / self.fv2) )
 
     return Ffv
+
 
 
 
