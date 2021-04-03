@@ -136,7 +136,41 @@ class FESModel:
 
     return Ffv
 
+  def get_derivative(self, t, x):
+    """
+    :param t: time
+    :param x: state variables [x1, x2, x3]
+    :param x: external state variables [x1_ext, x2_ext, x3_ext]
+    :return: time derivatives of state variables [x1Dot, x2Dot, x3Dot]
+    """
+    xDotVector = []
 
+    x1Dot = self.roc_excitation(x)
+    x2Dot = self.rot_velocity(x)
+    x3Dot = self.rot_acceleration(x, self.u, self.external_state_vector)
+
+    xDotVector = [x1Dot, x2Dot, x3Dot]
+
+    return xDotVector
+
+
+if __name__ == "__main__":
+  # excitation
+  #test = FESModel(excitation)
+
+  def simulate(excitation_input, external_state_vectors, initial_state, simTime):
+    simulationTime = [0, simTime]
+
+    model = FESModel(excitation_input, external_state_vectors)
+
+    sol = solve_ivp(model.get_derivative, simulationTime, initial_state)
+
+    time = sol.t
+    ret = sol.y
+
+    return time, ret
+
+  
 
 
 
