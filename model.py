@@ -32,7 +32,7 @@ class FESModel:
     # x1 dot = rate of chance of dynamic level of muscle activation
     # x1 = Factivation
     x1 = x[0]
-    x1_dot = (excitation_at_time - x1) * ((excitation_at_time / self.TAct) + ((1 - excitation_at_time) / self.TDeact))
+    x1_dot = (excitation_at_time - x1) * ((excitation_at_time / self.TAct)+((1 - excitation_at_time) / self.TDeact))
     return x1_dot
 
   # EQN 5
@@ -69,7 +69,7 @@ class FESModel:
     x1_ext = x_ext_at_time[0]
     x2_ext = x_ext_at_time[1]
     x2 = state_vector[1]
-    return (self.mF * self.cF * (x1_ext * math.sin(np.radians(x2)) - (x2_ext * math.cos(np.radians(x2)))))
+    return (self.mF * self.cF * (x1_ext * math.sin(x2)) - (x2_ext * math.cos(x2)))
 
   # Equation 9 from Appendix A
   def get_torque_elastic(self, x):
@@ -150,7 +150,6 @@ class FESModel:
       data_point_at_time = x_ext_vector[int(t)]
       x_ext_at_time[i] = data_point_at_time[1]
 
-    #print(x_ext_at_time)
     excitation_at_time = self.u[int(t)]
     x1Dot = self.roc_excitation(x, excitation_at_time)
     x2Dot = self.rot_velocity(x)
