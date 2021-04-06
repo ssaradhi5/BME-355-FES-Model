@@ -34,12 +34,12 @@ def interpolateData(filePath):
 
 fileNames = ['x1_ext_data', 'x2_ext_data', 'x3_ext_data', 'x4_ext_data']
 
-#interpolateData('x1_ext_data.csv')
-#interpolateData('x2_ext_data.csv')
-#interpolateData('x3_ext_data.csv')
-#interpolateData('x4_ext_data.csv')
+interpolateData('x1_ext_data.csv')
+interpolateData('x2_ext_data.csv')
+interpolateData('x3_ext_data.csv')
+interpolateData('x4_ext_data.csv')
 
-interpolateData('excitation-data-paper.csv')
+#interpolateData('excitation-data-paper.csv')
 
 
 
