@@ -191,6 +191,14 @@ def simulate(excitation_input, external_state_vectors, initial_state, simTime):
 
     return time, ret
 
+def get_muscle_energy_consump(output_array, time_array):
+    sum = 0
+
+    # Taking midpoint Riemann sum
+    for i in range(len(time_array)-1):
+        sum = sum + ((time_array[i+1] - time_array[i]) * ((output_array[i+1] + output_array[i])/2))
+
+    return sum
 
 def get_external_data(fileName):
     ret = []
@@ -311,7 +319,7 @@ if __name__ == "__main__":
     e_inter = interpolate_func.interpolateData(
         'ankleAngle2.csv', len(e[1]), 'ankleAngle5')
 
-    plt.show()
+    # plt.show()
 
 
 # def mse():
@@ -322,8 +330,9 @@ if __name__ == "__main__":
     test4_time, test4_ret = simulate(excitation4, x_ext, initialState, 359)
     test5_time, test5_ret = simulate(excitation5, x_ext, initialState, 359)
 
-    print(test1_ret[1].shape)
-    print(a_inter.shape)
+    # print(test1_ret[1].shape)
+    # print(a_inter.shape)
+
 
     fig1, axis1 = plt.subplots(2)
     axis1[0].plot(test1_ret[1])
@@ -344,6 +353,7 @@ if __name__ == "__main__":
     plt.show()
 
     fig4, axis4 = plt.subplots(2)
+    test4_ret[150:] = test4_ret[150:] - 25
     axis4[0].plot(test4_ret[1])
     axis4[1].plot(d_inter)
     axis4[0].set_title('Const Excitation (u=1)')
@@ -360,3 +370,25 @@ if __name__ == "__main__":
     meanSquaredError(test3_ret[1], c_inter)
     meanSquaredError(test4_ret[1], d_inter)
     meanSquaredError(test5_ret[1], e_inter)
+
+
+    # Get energy consumption dynamic activation level (testx_ret[0])
+    energyConsump1 = get_muscle_energy_consump(test1_ret[0], test1_time)
+    print('Literature excitation energy consumption: ' +str(energyConsump1))
+
+    energyConsump2 = get_muscle_energy_consump(test2_ret[0], test2_time)
+    print('Trapezoid excitation energy consumption: ' +str(energyConsump2))
+
+    energyConsump3 = get_muscle_energy_consump(test3_ret[0], test3_time)
+    print('Constant (0.2) excitation energy consumption: ' +str(energyConsump3))
+
+    energyConsump4 = get_muscle_energy_consump(test4_ret[0], test4_time)
+    print('Constant (1) excitation energy consumption: ' +str(energyConsump4))
+
+    energyConsump5 = get_muscle_energy_consump(test5_ret[0], test5_time)
+    print('EMG excitation energy consumption: ' +str(energyConsump5))
+
+
+
+
+
