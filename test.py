@@ -57,7 +57,29 @@ import matplotlib.pyplot as plt
 #
 # np.savetxt("trapezoid.csv",output,delimiter=',')
 
-output = np.genfromtxt('trapezoid.csv', delimiter=',')
-print(output.shape)
-plt.plot(output)
+# output = np.genfromtxt('trapezoid.csv', delimiter=',')
+# # print(output.shape)
+# # plt.plot(output)
+# # plt.show()
+
+# emg = np.genfromtxt('EMG_data.csv', delimiter=',')
+
+# emg_new = emg[::2]
+# emg_new = emg[0:360]
+
+# plt.subplot(2, 2, 1)
+
+# plt.plot(emg)
+# plt.subplot(2, 2, 2)
+# plt.plot(emg_new)
+# # plt.show()
+
+# print(emg_new.shape)
+
+
+# np.savetxt("EMG_data_resampled.csv", emg_new, delimiter=',')
+
+output = np.genfromtxt(
+    'InterpolatedData/ankleAngle2.csvankleAngle2_interpolated.csv', delimiter=',')
+plt.plot(output[:, 1])
 plt.show()
