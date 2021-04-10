@@ -4,11 +4,11 @@ import csv
 import matplotlib.pyplot as plt
 
 
-def interpolateData(filePath, dataLength, label):
+def interpolateData(filePath, dataLength):
     data = []
     interData = []
 
-    with open('HealthyData/' + filePath) as file:
+    with open('Raw External Data/' + filePath) as file:
         plots = csv.reader(file, delimiter=',')
         for row in plots:
             data.append(float(row[1]))
@@ -27,22 +27,19 @@ def interpolateData(filePath, dataLength, label):
 
     interData = np.interp(xAxis, xp, data)
 
-    with open('InterpolatedData/'+filePath+label+'_interpolated.csv', 'w', newline='') as csvfile:
+    with open('InterpolatedData/' +filePath +'_interpolated.csv', 'w', newline='') as csvfile:
         filewriter = csv.writer(csvfile)
         for i in range(len(interData)):
             filewriter.writerow([xAxis[i], interData[i]])
 
-    arr = np.genfromtxt('InterpolatedData/'+filePath+label +
+    arr = np.genfromtxt('InterpolatedData/'+filePath +
                         '_interpolated.csv', delimiter=',')
     return arr[:, 1]
 
 # fileNames = ['x1_ext_data', 'x2_ext_data', 'x3_ext_data', 'x4_ext_data']
 
-# interpolateData('x1_ext_data.csv', 360)
-# interpolateData('x2_ext_data.csv', 360)
-# interpolateData('x3_ext_data.csv', 360)
-# interpolateData('x4_ext_data.csv', 360)
+interpolateData('x1_ext_data.csv', 360)
+interpolateData('x2_ext_data.csv', 360)
+interpolateData('x3_ext_data.csv', 360)
+interpolateData('x4_ext_data.csv', 360)
 
-
-interpolateData('x-acc-test.csv', 360, 'xacc')
-interpolateData('z-acc-test.csv', 360, 'zacc')
