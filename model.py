@@ -224,14 +224,12 @@ def simulate(excitation_input, external_state_vectors, initial_state, simTime):
 
 
 def get_muscle_energy_consump(output_array, time_array):
-
     sum = 0
 
     # Taking midpoint Riemann sum
     for i in range(len(time_array)-1):
         sum = sum + ((time_array[i+1] - time_array[i])
                      * ((output_array[i+1] + output_array[i])/2))
-
     return sum
 
 
@@ -271,38 +269,46 @@ def plot_model(excitationInput, x_ext, label):
 
 def plot_foot_angles(excitationInputs, x_ext, labels):
     initialState = np.array([0.0, -15.0, 0.0])
+    healthyTime = 0
 
-    time1, testSim1 = simulate(
-        excitationInputs[0], x_ext, initialState, 359)
-    time2, testSim2 = simulate(
-        excitationInputs[1], x_ext, initialState, 359)
-    time3, testSim3 = simulate(
-        excitationInputs[2], x_ext, initialState, 359)
-    time4, testSim4 = simulate(
-        excitationInputs[3], x_ext, initialState, 359)
-    time5, testSim5 = simulate(
-        excitationInputs[4], x_ext, initialState, 359)
+    for i in range(len(excitationInputs)):
+        time, testSim = simulate(excitationInputs[i], x_ext, initialState, 359)
+        healthyTime = time
 
-    ankleAngle1 = testSim1[1, :]
-    ankleAngle2 = testSim2[1, :]
-    ankleAngle3 = testSim3[1, :]
-    ankleAngle4 = testSim4[1, :]
-    ankleAngle5 = testSim5[1, :]
+        ankleAngle = testSim[1, :]
 
-    plt.plot(time1, ankleAngle1, label=labels[0])
-    plt.plot(time2, ankleAngle2, label=labels[1])
-    plt.plot(time3, ankleAngle3, label=labels[2])
-    plt.plot(time4, ankleAngle4, label=labels[3])
-    plt.plot(time5, ankleAngle5, label=labels[4])
+        plt.plot(time, ankleAngle, label=labels[i])
 
     a_inter = interpolate_func.interpolateData(
-        'ankleAngle2.csv', len(testSim1[1]))
+        'ankleAngle2.csv', len(healthyTime))
 
-    plt.plot(time1, a_inter, label="Healthy Foot Angle")
+    plt.plot(healthyTime, a_inter, label="Healthy Foot Angle")
 
     plt.xlabel('Time (ms)')
     plt.ylabel('Foot Angle (degrees)')
     plt.title('Foot Angle over time for various excitation inputs')
+    plt.legend()
+    plt.show()
+
+def test_foot_angle(excitationInputs, x_ext, labels):
+    initialState = np.array([0.0, -15.0, 0.0])
+    healthyTime = 0
+
+    for i in range(len(excitationInputs)):
+        time, testSim = simulate(excitationInputs[i], x_ext, initialState, 359)
+        healthyTime = time  # using same time as last foot angle output
+
+        ankleAngle = testSim[1,:]
+        plt.plot(time, ankleAngle, label=labels[i])
+
+    a_inter = interpolate_func.interpolateData(
+        'ankleAngle2.csv', len(healthyTime))
+
+    plt.plot(healthyTime, a_inter, label="Healthy Foot Angle")
+
+    plt.xlabel('Time (ms)')
+    plt.ylabel('Foot Angle (degrees)')
+    plt.title('Foot Angle over time for various constant excitation inputs')
     plt.legend()
     plt.show()
 
@@ -316,25 +322,9 @@ def run(find_u=False):
     extData3 = get_external_data('x3_ext_data.csv_interpolated.csv')
     extData4 = get_external_data('x4_ext_data.csv_interpolated.csv')
 
+    # Converting angle degree into radians
     extData3 = np.radians(extData3)
     extData4 = np.radians(extData4)
-
-    # time = np.linspace(0, 0.36, 360)
-    # fig, axis = plt.subplots(4)
-    # axis[0].plot(time, extData1)
-    # axis[0].set_title("Horizontal Ankle Acceleration")
-    #
-    # axis[1].plot(time, extData2)
-    # axis[1].set_title("Vertical Ankle Acceleration")
-    #
-    # axis[2].plot(time, extData3)
-    # axis[2].set_title("Shank Angle")
-    #
-    # axis[3].plot(time, extData4)
-    # axis[3].set_title("Rotational Velocity of Shank")
-    #
-    # fig.tight_layout()
-    # plt.show()
 
     ### Generate excitation inputs ###
     excitation1 = np.genfromtxt(
@@ -369,13 +359,14 @@ def run(find_u=False):
         best_u = u_values[index]
         print("BEST U {} " .format(best_u))
 
-    #### Model set up and run ###
+    ### Model set up and run ###
     excitationInputs = [excitation1, excitation2,
                         excitation3, excitation4, excitation5]
     labels = ["Literature Excitation Signal", "Trapezoid Excitation Signal",
               "Constant Excitation Signal (u = 0.2)", "Constant Excitation Signal (u = 1)", "EMG Envelope"]
 
     plot_foot_angles(excitationInputs, x_ext, labels)
+
     a = plot_model(excitation1, x_ext, "Literature Excitation Signal")
     a_inter = interpolate_func.interpolateData(
         'ankleAngle2.csv', len(a[1]))
@@ -396,49 +387,43 @@ def run(find_u=False):
     e_inter = interpolate_func.interpolateData(
         'ankleAngle2.csv', len(e[1]))
 
+    # -------------------------------------Model Testing------------------------------------------------------
+
+    # 1. Sensitivity Analysis (u = 0 - 1 w/ increments = 0.1)
+    # excitation1 = np.full(360, 0)
+    # excitation2 = np.full(360, 0.1)
+    # excitation3 = np.full(360, 0.2)
+    # excitation4 = np.full(360, 0.3)
+    # excitation5 = np.full(360, 0.4)
+    # excitation6 = np.full(360, 0.5)
+    # excitation7 = np.full(360, 0.6)
+    # excitation8 = np.full(360, 0.7)
+    # excitation9 = np.full(360, 0.8)
+    # excitation10 = np.full(360, 0.9)
+    # excitation11 = np.full(360, 1)
+    # excitationInputsTest = [excitation1, excitation2,
+    #                     excitation3, excitation4, excitation5, excitation6, excitation7, excitation8,
+    #                     excitation9, excitation10, excitation11]
+    # labelsTest = ["u = 0", "u = 0.1", "u = 0.2", "u = 0.3", "u = 0.4", "u = 0.5", "u = 0.6", "u = 0.7",
+    #               "u = 0.8", "u = 0.9", "u = 1.0"]
+    # 
+    # test_foot_angle(excitationInputsTest, x_ext, labelsTest)
+
+    # --------------------------------------------------------------------------------------------------------
+
+    # Show all generated figures
     plt.show()
 
 
-# def mse():
-  ### Root squared error between literature data and simulated data ###
+  ## Root squared error between literature data and simulated data ###
     test1_time, test1_ret = simulate(excitation1, x_ext, initialState, 359)
     test2_time, test2_ret = simulate(excitation2, x_ext, initialState, 359)
     test3_time, test3_ret = simulate(excitation3, x_ext, initialState, 359)
     test4_time, test4_ret = simulate(excitation4, x_ext, initialState, 359)
     test5_time, test5_ret = simulate(excitation5, x_ext, initialState, 359)
 
-    # print(test1_ret[1].shape)
-    # print(a_inter.shape)
-
-    # fig1, axis1 = plt.subplots(2)
-    # axis1[0].plot(test1_ret[1])
-    # axis1[1].plot(a_inter)
-    # axis1[0].set_title('Literature Excitation')
-    # plt.show()
-    #
-    # fig2, axis2 = plt.subplots(2)
-    # axis2[0].plot(test2_ret[1])
-    # axis2[1].plot(b_inter)
-    # axis2[0].set_title('Trapezoid Excitation')
-    # plt.show()
-    #
-    # fig3, axis3 = plt.subplots(2)
-    # axis3[0].plot(test3_ret[1])
-    # axis3[1].plot(c_inter)
-    # axis3[0].set_title('Const Excitation (u=0.2)')
-    # plt.show()
-    #
-    # fig4, axis4 = plt.subplots(2)
-    # axis4[0].plot(test4_ret[1])
-    # axis4[1].plot(d_inter)
-    # axis4[0].set_title('Const Excitation (u=1)')
-    # plt.show()
-    #
-    # fig5, axis5 = plt.subplots(2)
-    # axis5[0].plot(test5_ret[1])
-    # axis5[1].plot(e_inter)
-    # axis5[0].set_title('EMG Envelope')
-    # plt.show()
+    #print(test1_ret[1].shape)
+    #print(a_inter.shape)
 
     rootMeanSquaredError(test1_ret[1], a_inter, labels[0])
     rootMeanSquaredError(test2_ret[1], b_inter, labels[1])
@@ -461,7 +446,6 @@ def run(find_u=False):
     #
     # energyConsump5 = get_muscle_energy_consump(test5_ret[0], test5_time)
     # print('EMG excitation energy consumption: ' +str(energyConsump5))
-
 
 if __name__ == "__main__":
     run()
