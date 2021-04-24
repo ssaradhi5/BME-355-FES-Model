@@ -6,17 +6,13 @@ import matplotlib.pyplot as plt
 
 def interpolateData(filePath, dataLength):
     data = []
-    interData = []
-
     with open('Raw External Data/' + filePath) as file:
         plots = csv.reader(file, delimiter=',')
         for row in plots:
             data.append(float(row[1]))
 
     data = np.array(data)
-
     lenData = len(data)
-
     time = 0.36
 
     # recreating the x-coordinates of the data points into same time range
