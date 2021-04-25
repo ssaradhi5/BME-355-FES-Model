@@ -248,7 +248,7 @@ def plot_model(excitationInput, x_ext, label):
     axis[0].set_title("Dynamic Activation Level")
 
     axis[1].plot(time, ankleAngle)
-    axis[1].set_title("Foot Angle wrt to Horiztonal")
+    axis[1].set_title("Foot Angle wrt to Horizontal")
 
     axis[2].plot(time, footRotationalVelocity)
     axis[2].set_title("Foot Rotational Velocity")
