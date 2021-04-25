@@ -247,7 +247,7 @@ def plot_model(excitationInput, x_ext, label):
     axis[0].set_title("Dynamic Activation Level")
 
     axis[1].plot(time, ankleAngle)
-    axis[1].set_title("Foot Angle wrt to Vertical")
+    axis[1].set_title("Foot Angle wrt to Horizontal")
 
     axis[2].plot(time, footRotationalVelocity)
     axis[2].set_title("Foot Rotational Velocity")
@@ -297,7 +297,7 @@ def test_foot_angle(excitationInputs, x_ext, labels):
 
     plt.xlabel('Time (ms)')
     plt.ylabel('Foot Angle (degrees)')
-    plt.title('Foot Angle over time for various constant excitation inputs')
+    plt.title('Foot Angle over time for increasing constant excitation inputs')
     plt.legend()
     plt.show()
 
@@ -395,7 +395,7 @@ def run(find_u=False):
     #                     excitation9, excitation10, excitation11]
     # labelsTest = ["u = 0", "u = 0.1", "u = 0.2", "u = 0.3", "u = 0.4", "u = 0.5", "u = 0.6", "u = 0.7",
     #               "u = 0.8", "u = 0.9", "u = 1.0"]
-    # 
+    #
     # test_foot_angle(excitationInputsTest, x_ext, labelsTest)
 
     # --------------------------------------------------------------------------------------------------------
@@ -404,15 +404,15 @@ def run(find_u=False):
     plt.show()
 
 
-  ## Root squared error between literature data and simulated data ###
+    # Root squared error between literature data and simulated data ###
     test1_time, test1_ret = simulate(excitation1, x_ext, initialState, 359)
     test2_time, test2_ret = simulate(excitation2, x_ext, initialState, 359)
     test3_time, test3_ret = simulate(excitation3, x_ext, initialState, 359)
     test4_time, test4_ret = simulate(excitation4, x_ext, initialState, 359)
     test5_time, test5_ret = simulate(excitation5, x_ext, initialState, 359)
 
-    #print(test1_ret[1].shape)
-    #print(a_inter.shape)
+    print(test1_ret[1].shape)
+    print(a_inter.shape)
 
     rootMeanSquaredError(test1_ret[1], a_inter, labels[0])
     rootMeanSquaredError(test2_ret[1], b_inter, labels[1])
