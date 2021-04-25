@@ -222,6 +222,7 @@ def simulate(excitation_input, external_state_vectors, initial_state, simTime):
 
     return time, ret
 
+
 def get_external_data(fileName):
     ret = []
 
@@ -279,6 +280,7 @@ def plot_foot_angles(excitationInputs, x_ext, labels):
     plt.legend()
     plt.show()
 
+
 def test_foot_angle(excitationInputs, x_ext, labels):
     initialState = np.array([0.0, -15.0, 0.0])
     healthyTime = 0
@@ -287,7 +289,7 @@ def test_foot_angle(excitationInputs, x_ext, labels):
         time, testSim = simulate(excitationInputs[i], x_ext, initialState, 359)
         healthyTime = time  # using same time as last foot angle output
 
-        ankleAngle = testSim[1,:]
+        ankleAngle = testSim[1, :]
         plt.plot(time, ankleAngle, label=labels[i])
 
     a_inter = interpolate_func.interpolateData(
@@ -403,7 +405,6 @@ def run(find_u=False):
     # Show all generated figures
     plt.show()
 
-
     # Root squared error between literature data and simulated data ###
     test1_time, test1_ret = simulate(excitation1, x_ext, initialState, 359)
     test2_time, test2_ret = simulate(excitation2, x_ext, initialState, 359)
@@ -411,14 +412,15 @@ def run(find_u=False):
     test4_time, test4_ret = simulate(excitation4, x_ext, initialState, 359)
     test5_time, test5_ret = simulate(excitation5, x_ext, initialState, 359)
 
-    print(test1_ret[1].shape)
-    print(a_inter.shape)
+    # print(test1_ret[1].shape)
+    # print(a_inter.shape)
 
     rootMeanSquaredError(test1_ret[1], a_inter, labels[0])
     rootMeanSquaredError(test2_ret[1], b_inter, labels[1])
     rootMeanSquaredError(test3_ret[1], c_inter, labels[2])
     rootMeanSquaredError(test4_ret[1], d_inter, labels[3])
     rootMeanSquaredError(test5_ret[1], e_inter, labels[4])
+
 
 if __name__ == "__main__":
     run()
